@@ -275,7 +275,7 @@ public class CompagniaDAOImpl extends AbstractMySQLDAO implements CompagniaDAO {
 		return result;
 	}
 
-	public boolean findByIdEager(Compagnia compagniaInput) throws Exception {
+	public void findByIdEager(Compagnia compagniaInput) throws Exception {
 
 		if (isNotActive())
 			throw new Exception("Connessione non attiva. Impossibile effettuare operazioni DAO.");
@@ -297,15 +297,12 @@ public class CompagniaDAOImpl extends AbstractMySQLDAO implements CompagniaDAO {
 					result.setDataAssunzione(rs.getDate("dataassunzione"));
 					compagniaInput.getImpiegati().add(result);
 				}
-				if (compagniaInput.getImpiegati() != null)
-					return false;
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
-		return true;
 	}
 
 }

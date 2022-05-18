@@ -3,6 +3,7 @@ package it.prova.gestionecompagnia.test;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -82,22 +83,12 @@ public class TestGestioneCompagnia {
 	}
 
 	private static void testDeleteCompagnia(CompagniaDAO compagniaDAOInstance) throws Exception {
-		System.out.println("Inizio testDeleteCompagnia");
-		List<Compagnia> elencoCompagniePresenti = compagniaDAOInstance.list();
-		int numeroCompagniePresentiPrimaDellaRimozione = elencoCompagniePresenti.size();
-		if (numeroCompagniePresentiPrimaDellaRimozione < 1)
-			throw new RuntimeException("testDeleteCompagnia fallito! Non ci sono compagnie sul database!");
+		Compagnia compagniaDaEliminare = compagniaDAOInstance.list().get(1);
+		compagniaDaEliminare.setImpiegati(new ArrayList<Impiegato>());
+		compagniaDAOInstance.findByIdEager(compagniaDaEliminare);
 
-		Compagnia compagniaDaEliminare = compagniaDAOInstance.list().get(4);
-//		if (compagniaDAOInstance.findByIdEager(compagniaDaEliminare)) {
-		int quanteCompagnieEliminate = compagniaDAOInstance.delete(compagniaDaEliminare);
-		if (quanteCompagnieEliminate < 1)
-			throw new RuntimeException("Cancellazione fallita!");
-		System.out.println("Sono stati eleminate " + quanteCompagnieEliminate + " compagnie!");
-		System.out.println("Fine testDeleteCompagnia!");
-//		} else {
-//			throw new RuntimeException("Ci sono ancora impiegati assunti in questa azienda!");
-//		}
+		compagniaDAOInstance.delete(compagniaDaEliminare);
+
 	}
 
 	private static void testUpdateCompagnia(CompagniaDAO compagniaDAOInstance) throws Exception {
