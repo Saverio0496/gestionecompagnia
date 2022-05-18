@@ -59,6 +59,8 @@ public class TestGestioneCompagnia {
 
 			testFindAllByCodiceFiscaleImpiegatoContiene(compagniaDAOInstance);
 
+			testFindAllByCompagnia(impiegatoDAOInstance);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -261,6 +263,17 @@ public class TestGestioneCompagnia {
 		}
 
 		System.out.println("Fine testFindAllByCodiceFiscaleImpiegatoContiene!");
+	}
+
+	private static void testFindAllByCompagnia(ImpiegatoDAO impiegatoDAOInstance) throws Exception {
+		System.out.println("Inizio testFindAllByCompagnia");
+		Date dataPerCompagnia = new SimpleDateFormat("dd-MM-yyyy").parse("29-01-2019");
+		Compagnia compagniaPerTest = new Compagnia(5L, "Vueling", 900000, dataPerCompagnia);
+		for (Impiegato impiegatoItem : impiegatoDAOInstance.findAllByCompagnia(compagniaPerTest)) {
+			System.out.println(impiegatoItem);
+		}
+
+		System.out.println("Fine testFindAllByCompagnia!");
 	}
 
 }
