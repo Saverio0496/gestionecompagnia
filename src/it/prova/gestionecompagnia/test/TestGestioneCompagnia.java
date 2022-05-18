@@ -65,6 +65,8 @@ public class TestGestioneCompagnia {
 
 			findAllByCompagniaConFatturatoMaggioreDi(impiegatoDAOInstance);
 
+			findAllErroriAssunzione(impiegatoDAOInstance);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -299,6 +301,15 @@ public class TestGestioneCompagnia {
 		}
 
 		System.out.println("Fine testFindAllByCompagniaConFatturatoMaggioreDi!");
+	}
+
+	private static void findAllErroriAssunzione(ImpiegatoDAO impiegatoDAOInstance) throws Exception {
+		System.out.println("Inizio testFindAllErroriAssunzione");
+		for (Impiegato impiegatoItem : impiegatoDAOInstance.findAllErroriAssunzione()) {
+			System.out.println(impiegatoItem);
+		}
+
+		System.out.println("Fine testFindAllErroriAssunzione!");
 	}
 
 }
