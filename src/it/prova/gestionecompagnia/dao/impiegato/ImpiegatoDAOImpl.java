@@ -237,23 +237,14 @@ public class ImpiegatoDAOImpl extends AbstractMySQLDAO implements ImpiegatoDAO {
 
 		if (dataInput == null)
 			throw new Exception("Valore di input non ammesso.");
-
-		ArrayList<Impiegato> result = new ArrayList<Impiegato>();
-		Impiegato impiegatoTemp = null;
+		int contatore = 0;
 		try (PreparedStatement ps = connection.prepareStatement(
 				"select count(*) from impiegato i inner join compagnia c on c.id = i.compagnia_id where c.datafondazione > ?")) {
 
 			ps.setDate(1, new java.sql.Date(dataInput.getTime()));
 			try (ResultSet rs = ps.executeQuery()) {
-				while (rs.next()) {
-					impiegatoTemp = new Impiegato();
-					impiegatoTemp.setNome(rs.getString("nome"));
-					impiegatoTemp.setCognome(rs.getString("cognome"));
-					impiegatoTemp.setCodiceFiscale(rs.getString("codicefiscale"));
-					impiegatoTemp.setDataNascita(rs.getDate("datanascita"));
-					impiegatoTemp.setDataAssunzione(rs.getDate("dataassunzione"));
-
-					result.add(impiegatoTemp);
+				if (rs.next()) {
+					contatore = rs.getInt("count(*)");
 				}
 
 			}
@@ -262,7 +253,7 @@ public class ImpiegatoDAOImpl extends AbstractMySQLDAO implements ImpiegatoDAO {
 			e.printStackTrace();
 			throw e;
 		}
-		return result.size();
+		return contatore;
 	}
 
 	public List<Impiegato> findAllByCompagniaConFatturatoMaggioreDi(int fatturatoInput) throws Exception {

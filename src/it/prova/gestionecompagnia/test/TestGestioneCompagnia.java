@@ -61,6 +61,8 @@ public class TestGestioneCompagnia {
 
 			testFindAllByCompagnia(impiegatoDAOInstance);
 
+			testCountByDataFondazioneCompagniaMaggioreDi(impiegatoDAOInstance);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -236,11 +238,11 @@ public class TestGestioneCompagnia {
 			System.out.println(compagniaItem);
 		}
 
-		System.out.println("Fine testFindAllByIndirizzoNegozio!");
+		System.out.println("Fine testFindAllByDataAssunzioneMaggioreDi!");
 	}
 
 	private static void testFindAllByRagioneSocialeContiene(CompagniaDAO compagniaDAOInstance) throws Exception {
-		System.out.println("Inizio testFindAllByDataAssunzioneMaggioreDi");
+		System.out.println("Inizio testFindAllByRagioneSocialeContiene");
 
 		String ragioneSocialePerTest = "vueling";
 
@@ -248,7 +250,7 @@ public class TestGestioneCompagnia {
 			System.out.println(compagniaItem);
 		}
 
-		System.out.println("Fine testFindAllByDataAssunzioneMaggioreDi!");
+		System.out.println("Fine testFindAllByRagioneSocialeContiene!");
 	}
 
 	private static void testFindAllByCodiceFiscaleImpiegatoContiene(CompagniaDAO compagniaDAOInstance)
@@ -274,6 +276,16 @@ public class TestGestioneCompagnia {
 		}
 
 		System.out.println("Fine testFindAllByCompagnia!");
+	}
+
+	private static void testCountByDataFondazioneCompagniaMaggioreDi(ImpiegatoDAO impiegatoDAOInstance)
+			throws Exception {
+		System.out.println("Inizio testCountByDataFondazioneCompagniaMaggioreDi");
+
+		Date dataFondazionePerTest = new SimpleDateFormat("dd-MM-yyyy").parse("01-01-2020");
+		System.out.println(impiegatoDAOInstance.countByDataFondazioneCompagniaMaggioreDi(dataFondazionePerTest));
+
+		System.out.println("Fine testCountByDataFondazioneCompagniaMaggioreDi!");
 	}
 
 }
