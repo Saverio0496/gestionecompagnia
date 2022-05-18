@@ -179,16 +179,100 @@ public class CompagniaDAOImpl extends AbstractMySQLDAO implements CompagniaDAO {
 		return result;
 	}
 
-	public List<Compagnia> findAllByDataAssunzioneMaggioreDi(Date dataInput) {
-		return null;
+	public List<Compagnia> findAllByDataAssunzioneMaggioreDi(Date dataInput) throws Exception {
+		if (isNotActive())
+			throw new Exception("Connessione non attiva. Impossibile effettuare operazioni DAO.");
+
+		if (dataInput == null)
+			throw new RuntimeException("Impossibile trovare compagnia: data assunzione mancante!");
+
+		List<Compagnia> result = new ArrayList<Compagnia>();
+
+		Compagnia compagniaTemp = null;
+		try (PreparedStatement ps = connection.prepareStatement(
+				"select distinct * from compagnia c inner join impiegato i on c.id=i.compagnia_id where i.dataassunzione > ?;")) {
+
+			ps.setDate(1, new java.sql.Date(dataInput.getTime()));
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					compagniaTemp = new Compagnia();
+					compagniaTemp.setRagioneSociale(rs.getString("ragionesociale"));
+					compagniaTemp.setFatturatoAnnuo(rs.getInt("fatturatoannuo"));
+					compagniaTemp.setDataFondazione(rs.getDate("datafondazione"));
+					compagniaTemp.setId(rs.getLong("ID"));
+					result.add(compagniaTemp);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		return result;
 	}
 
-	public List<Compagnia> findAllByRagioneSocialeContiene(String input) {
-		return null;
+	public List<Compagnia> findAllByRagioneSocialeContiene(String input) throws Exception {
+		if (isNotActive())
+			throw new Exception("Connessione non attiva. Impossibile effettuare operazioni DAO.");
+
+		if (input == null || input.isEmpty())
+			throw new RuntimeException("Impossibile trovare compagnia: ragione sociale mancante!");
+
+		List<Compagnia> result = new ArrayList<Compagnia>();
+
+		Compagnia compagniaTemp = null;
+		try (PreparedStatement ps = connection
+				.prepareStatement("select * from compagnia  where ragionesociale like ?;")) {
+
+			ps.setString(1, '%' + input + '%');
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					compagniaTemp = new Compagnia();
+					compagniaTemp.setRagioneSociale(rs.getString("ragionesociale"));
+					compagniaTemp.setFatturatoAnnuo(rs.getInt("fatturatoannuo"));
+					compagniaTemp.setDataFondazione(rs.getDate("datafondazione"));
+					compagniaTemp.setId(rs.getLong("ID"));
+					result.add(compagniaTemp);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		return result;
 	}
 
-	public List<Compagnia> findAllByCodiceFiscaleImpiegatoContiene(String input) {
-		return null;
+	public List<Compagnia> findAllByCodiceFiscaleImpiegatoContiene(String input) throws Exception {
+		if (isNotActive())
+			throw new Exception("Connessione non attiva. Impossibile effettuare operazioni DAO.");
+
+		if (input == null || input.isEmpty())
+			throw new RuntimeException("Impossibile trovare compagnia: codice fiscale mancante!");
+
+		List<Compagnia> result = new ArrayList<Compagnia>();
+
+		Compagnia compagniaTemp = null;
+		try (PreparedStatement ps = connection.prepareStatement(
+				"select distinct * from compagnia c inner join impiegato i on c.id=i.compagnia_id where i.codicefiscale like ?;")) {
+
+			ps.setString(1, '%' + input + '%');
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					compagniaTemp = new Compagnia();
+					compagniaTemp.setRagioneSociale(rs.getString("ragionesociale"));
+					compagniaTemp.setFatturatoAnnuo(rs.getInt("fatturatoannuo"));
+					compagniaTemp.setDataFondazione(rs.getDate("datafondazione"));
+					compagniaTemp.setId(rs.getLong("ID"));
+					result.add(compagniaTemp);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		return result;
 	}
 
 	public boolean findByIdEager(Compagnia compagniaInput) throws Exception {

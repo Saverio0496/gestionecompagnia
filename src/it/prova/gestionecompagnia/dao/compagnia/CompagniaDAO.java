@@ -8,11 +8,11 @@ import it.prova.gestionecompagnia.model.Compagnia;
 
 public interface CompagniaDAO extends IBaseDAO<Compagnia> {
 
-	public List<Compagnia> findAllByDataAssunzioneMaggioreDi(Date dataInput);
+	public List<Compagnia> findAllByDataAssunzioneMaggioreDi(Date dataInput) throws Exception;
 
-	public List<Compagnia> findAllByRagioneSocialeContiene(String input);
+	public List<Compagnia> findAllByRagioneSocialeContiene(String input) throws Exception;
 
-	public List<Compagnia> findAllByCodiceFiscaleImpiegatoContiene(String input);
+	public List<Compagnia> findAllByCodiceFiscaleImpiegatoContiene(String input) throws Exception;
 
 	public boolean findByIdEager(Compagnia compagniaInput) throws Exception;
 

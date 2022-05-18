@@ -3,6 +3,7 @@ package it.prova.gestionecompagnia.dao.impiegato;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
@@ -121,6 +122,7 @@ public class ImpiegatoDAOImpl extends AbstractMySQLDAO implements ImpiegatoDAO {
 			ps.setDate(4, new java.sql.Date(impiegatoInput.getDataNascita().getTime()));
 			ps.setDate(5, new java.sql.Date(impiegatoInput.getDataAssunzione().getTime()));
 			ps.setLong(6, impiegatoInput.getCompagnia().getId());
+
 			result = ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -196,20 +198,133 @@ public class ImpiegatoDAOImpl extends AbstractMySQLDAO implements ImpiegatoDAO {
 		return result;
 	}
 
-	public List<Impiegato> findAllByCompagnia(Compagnia compagniaInput) {
-		return null;
+	public List<Impiegato> findAllByCompagnia(Compagnia compagniaInput) throws Exception {
+		if (isNotActive())
+			throw new Exception("Connessione non attiva. Impossibile effettuare operazioni DAO.");
+
+		if (compagniaInput == null)
+			throw new Exception("Valore di input non ammesso.");
+
+		ArrayList<Impiegato> result = new ArrayList<Impiegato>();
+		Impiegato impiegatoTemp = null;
+		try (PreparedStatement ps = connection.prepareStatement(
+				"select * from impiegato i inner join compagnia c on c.id = i.compagnia_id where c.id>?")) {
+
+			ps.setLong(1, compagniaInput.getId());
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					impiegatoTemp = new Impiegato();
+					impiegatoTemp.setNome(rs.getString("nome"));
+					impiegatoTemp.setCognome(rs.getString("cognome"));
+					impiegatoTemp.setCodiceFiscale(rs.getString("codicefiscale"));
+					impiegatoTemp.setDataNascita(rs.getDate("datanascita"));
+					impiegatoTemp.setDataAssunzione(rs.getDate("dataassunzione"));
+
+					result.add(impiegatoTemp);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		return result;
 	}
 
-	public int countByDataFondazioneCompagniaMaggioreDi(Date dataInput) {
-		return 0;
+	public int countByDataFondazioneCompagniaMaggioreDi(Date dataInput) throws Exception {
+		if (isNotActive())
+			throw new Exception("Connessione non attiva. Impossibile effettuare operazioni DAO.");
+
+		if (dataInput == null)
+			throw new Exception("Valore di input non ammesso.");
+
+		ArrayList<Impiegato> result = new ArrayList<Impiegato>();
+		Impiegato impiegatoTemp = null;
+		try (PreparedStatement ps = connection.prepareStatement(
+				"select count(*) from impiegato i inner join compagnia c on c.id = i.compagnia_id where c.datafondazione > ?")) {
+
+			ps.setDate(1, new java.sql.Date(dataInput.getTime()));
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					impiegatoTemp = new Impiegato();
+					impiegatoTemp.setNome(rs.getString("nome"));
+					impiegatoTemp.setCognome(rs.getString("cognome"));
+					impiegatoTemp.setCodiceFiscale(rs.getString("codicefiscale"));
+					impiegatoTemp.setDataNascita(rs.getDate("datanascita"));
+					impiegatoTemp.setDataAssunzione(rs.getDate("dataassunzione"));
+
+					result.add(impiegatoTemp);
+				}
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		return result.size();
 	}
 
-	public List<Impiegato> findAllByCompagniaConFatturatoMaggioreDi(int fatturatoInput) {
-		return null;
+	public List<Impiegato> findAllByCompagniaConFatturatoMaggioreDi(int fatturatoInput) throws Exception {
+		if (isNotActive())
+			throw new Exception("Connessione non attiva. Impossibile effettuare operazioni DAO.");
+
+		if (fatturatoInput == 0)
+			throw new Exception("Valore di input non ammesso.");
+
+		ArrayList<Impiegato> result = new ArrayList<Impiegato>();
+		Impiegato impiegatoTemp = null;
+		try (PreparedStatement ps = connection.prepareStatement(
+				"select * from impiegato i inner join compagnia c on c.id = i.compagnia_id where c.fatturatoannuo > ?")) {
+
+			ps.setLong(1, fatturatoInput);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					impiegatoTemp = new Impiegato();
+					impiegatoTemp.setNome(rs.getString("nome"));
+					impiegatoTemp.setCognome(rs.getString("cognome"));
+					impiegatoTemp.setCodiceFiscale(rs.getString("codicefiscale"));
+					impiegatoTemp.setDataNascita(rs.getDate("datanascita"));
+					impiegatoTemp.setDataAssunzione(rs.getDate("dataassunzione"));
+
+					result.add(impiegatoTemp);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		return result;
 	}
 
-	public List<Impiegato> findAllErroriAssunzione() {
-		return null;
+	public List<Impiegato> findAllErroriAssunzione() throws Exception {
+		if (isNotActive())
+			throw new Exception("Connessione non attiva. Impossibile effettuare operazioni DAO.");
+
+		ArrayList<Impiegato> result = new ArrayList<Impiegato>();
+		Impiegato impiegatoTemp = null;
+		try (PreparedStatement ps = connection.prepareStatement(
+				"select * from impiegato i inner join compagnia c on c.id = i.compagnia_id where i.dataassunzione < c.datafondazione")) {
+
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					impiegatoTemp = new Impiegato();
+					impiegatoTemp.setNome(rs.getString("nome"));
+					impiegatoTemp.setCognome(rs.getString("cognome"));
+					impiegatoTemp.setCodiceFiscale(rs.getString("codicefiscale"));
+					impiegatoTemp.setDataNascita(rs.getDate("datanascita"));
+					impiegatoTemp.setDataAssunzione(rs.getDate("dataassunzione"));
+
+					result.add(impiegatoTemp);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		return result;
 	}
 
 }

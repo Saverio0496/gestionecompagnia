@@ -2,6 +2,7 @@ package it.prova.gestionecompagnia.test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -51,6 +52,12 @@ public class TestGestioneCompagnia {
 			testFindByIdPerImpiegato(impiegatoDAOInstance);
 
 			testFindByExampleImpiegato(impiegatoDAOInstance);
+
+			testFindAllByDataAssunzioneMaggioreDi(compagniaDAOInstance);
+
+			testFindAllByRagioneSocialeContiene(compagniaDAOInstance);
+
+			testFindAllByCodiceFiscaleImpiegatoContiene(compagniaDAOInstance);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -136,15 +143,19 @@ public class TestGestioneCompagnia {
 	}
 
 	private static void testInsertImpiegato(ImpiegatoDAO impiegatoDAOInstance) throws Exception {
-		System.out.println("Inzio testInsertImpiegato");
-		Compagnia compagniaId = new Compagnia();
-		compagniaId.setId(2L);
-		int quantiImpiegatiInseriti = impiegatoDAOInstance
-				.insert(new Impiegato("Luigi", "Carolis", "LGICRL67A45F501H", new Date(), new Date()));
-		if (quantiImpiegatiInseriti < 1)
-			throw new RuntimeException("testInsertImpiegato fallito!");
+		System.out.println("Inizio testInsertImpiegato");
+		Date dataNascitaPerTest = new SimpleDateFormat("dd-MM-yyyy").parse("04-05-1996");
+		Date dataAssunzionePerTest = new SimpleDateFormat("dd-MM-yyyy").parse("09-11-2020");
 
-		System.out.println("Fine testInserCompagnia!");
+		Compagnia compagniaPerId = new Compagnia();
+		compagniaPerId.setId(3L);
+
+		int quantiImpiegatiInseriti = impiegatoDAOInstance.insert(new Impiegato("Sandro", "Terra", "SNDTRA78A32R501H",
+				dataNascitaPerTest, dataAssunzionePerTest, compagniaPerId));
+		if (quantiImpiegatiInseriti < 1)
+			throw new RuntimeException("testInsertImpiegato falito!");
+
+		System.out.println("Fine testInserImpiegato!");
 	}
 
 	private static void testDeleteImpiegato(ImpiegatoDAO impiegatoDAOInstance) throws Exception {
@@ -154,7 +165,7 @@ public class TestGestioneCompagnia {
 		if (numeroImpiegatiPresentiPrimaDellaRimozione < 1)
 			throw new RuntimeException("testDeleteImpiegato fallito! Non ci sono impiegati sul database!");
 
-		Impiegato impiegatoDaEliminare = impiegatoDAOInstance.list().get(4);
+		Impiegato impiegatoDaEliminare = impiegatoDAOInstance.list().get(0);
 		int quanteImpiegatiEliminati = impiegatoDAOInstance.delete(impiegatoDaEliminare);
 		if (quanteImpiegatiEliminati < 1)
 			throw new RuntimeException("Cancellazione fallita!");
@@ -212,6 +223,44 @@ public class TestGestioneCompagnia {
 			System.out.println(impiegatoItem);
 		System.out.println("Fine testFindByExample!");
 
+	}
+
+	private static void testFindAllByDataAssunzioneMaggioreDi(CompagniaDAO compagniaDAOInstance) throws Exception {
+		System.out.println("Inizio testFindAllByDataAssunzioneMaggioreDi");
+
+		Date dataAssunzionePerTest = new SimpleDateFormat("dd-MM-yyyy").parse("01-01-2020");
+
+		for (Compagnia compagniaItem : compagniaDAOInstance.findAllByDataAssunzioneMaggioreDi(dataAssunzionePerTest)) {
+			System.out.println(compagniaItem);
+		}
+
+		System.out.println("Fine testFindAllByIndirizzoNegozio!");
+	}
+
+	private static void testFindAllByRagioneSocialeContiene(CompagniaDAO compagniaDAOInstance) throws Exception {
+		System.out.println("Inizio testFindAllByDataAssunzioneMaggioreDi");
+
+		String ragioneSocialePerTest = "vueling";
+
+		for (Compagnia compagniaItem : compagniaDAOInstance.findAllByRagioneSocialeContiene(ragioneSocialePerTest)) {
+			System.out.println(compagniaItem);
+		}
+
+		System.out.println("Fine testFindAllByDataAssunzioneMaggioreDi!");
+	}
+
+	private static void testFindAllByCodiceFiscaleImpiegatoContiene(CompagniaDAO compagniaDAOInstance)
+			throws Exception {
+		System.out.println("Inizio testFindAllByCodiceFiscaleImpiegatoContiene");
+
+		String codiceFiscalePerTest = "78A";
+
+		for (Compagnia compagniaItem : compagniaDAOInstance
+				.findAllByCodiceFiscaleImpiegatoContiene(codiceFiscalePerTest)) {
+			System.out.println(compagniaItem);
+		}
+
+		System.out.println("Fine testFindAllByCodiceFiscaleImpiegatoContiene!");
 	}
 
 }

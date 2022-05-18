@@ -9,12 +9,12 @@ import it.prova.gestionecompagnia.model.Impiegato;
 
 public interface ImpiegatoDAO extends IBaseDAO<Impiegato> {
 
-	public List<Impiegato> findAllByCompagnia(Compagnia compagniaInput);
+	public List<Impiegato> findAllByCompagnia(Compagnia compagniaInput) throws Exception;
 
-	public int countByDataFondazioneCompagniaMaggioreDi(Date dataInput);
+	public int countByDataFondazioneCompagniaMaggioreDi(Date dataInput) throws Exception;
 
-	public List<Impiegato> findAllByCompagniaConFatturatoMaggioreDi(int fatturatoInput);
+	public List<Impiegato> findAllByCompagniaConFatturatoMaggioreDi(int fatturatoInput) throws Exception;
 
-	public List<Impiegato> findAllErroriAssunzione();
+	public List<Impiegato> findAllErroriAssunzione() throws Exception;
 
 }
